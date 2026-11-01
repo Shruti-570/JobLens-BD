@@ -1,0 +1,3 @@
+# Methodology and limitations
+
+Skill analytics count unique job postings linked to a skill. They do not count repeated mentions. Extraction uses a transparent, extendable bilingual keyword list. Category assignment selects the category with the most matching terms; ties follow configured category ordering. Experience parsing recognizes numeric years expressions. These heuristics require local expert review and are not benchmarked. No supervised model is bundled because no labeled training corpus is included. For future training, label a representative dataset, stratify train/test separation, report per-class precision, recall, F1 and confusion matrix, and persist the fitted pipeline with versioned data and code.
