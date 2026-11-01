@@ -1,0 +1,8 @@
+The Streamlit application runs as a persistent Python web service on Render; Netlify serves a static, responsive front page that links to it. Netlify does not host the Streamlit server itself. The Netlify site uses `netlify.toml` and `netlify/index.html`. The Render Blueprint in `render.yaml` configures the Python web service. PostgreSQL is hosted separately on Neon Free so it does not have Render Free Postgres's 30-day expiry.
+
+1. Create a Neon Free project and database. Neon currently includes 100 CU-hours and 1 GB storage per project on Free; its database compute scales to zero while idle. The Free plan has no time limit, and reaching monthly quotas suspends compute until the next month without deleting project data. See [Neon pricing and Free limits](https://neon.com/pricing).
+2. Create a Render Blueprint from `Shruti-570/JobLens-BD` and apply `render.yaml`. The web service uses Python 3.13.5, installs `requirements.txt`, and binds Streamlit to Render's injected port. Set `DATABASE_URL` in the Render service environment to Neon’s PostgreSQL connection string; never commit that secret.
+3. In Netlify, import `Shruti-570/JobLens-BD`. Keep the repository root as the base directory and use the publish directory `netlify` (already configured in `netlify.toml`). No build command is required for the static page.
+4. The landing page points to `https://joblens-bd.onrender.com`. If Render assigns a different service URL, update the app link in `netlify/index.html` and redeploy Netlify.
+
+The Render web service is on its free plan and can spin down while idle. Neon Free does not expire after 30 days, but it has monthly compute and storage quotas; see the linked provider docs for current limits.

@@ -71,10 +71,6 @@ pytest
 
 ## Website deployment: Render + Netlify
 
-The Streamlit application runs as a persistent Python web service on Render; Netlify serves a static, responsive front page that links to it. Netlify does not host the Streamlit server itself. The Netlify site uses `netlify.toml` and `netlify/index.html`. The Render Blueprint in `render.yaml` provisions the web service and PostgreSQL database from this repository.
+The Streamlit app runs as a Python service on Render. Netlify hosts a responsive landing page that links to the app. The app database uses Neon Free so it does not inherit Render Free Postgres's 30-day expiry. Follow [docs/deployment_netlify_render.md](docs/deployment_netlify_render.md) to provision the services and set the `DATABASE_URL` secret in Render.
 
-1. In Render, create a Blueprint from `Shruti-570/JobLens-BD` and apply `render.yaml`. The service uses Python 3.13.5, installs `requirements.txt`, and binds Streamlit to Render's injected port.
-2. In Netlify, import `Shruti-570/JobLens-BD`. Keep the repository root as the base directory and use the publish directory `netlify` (already configured in `netlify.toml`). No build command is required for the static page.
-3. The landing page points to `https://joblens-bd.onrender.com`. If Render assigns a different service URL, update the app link in `netlify/index.html` and redeploy Netlify.
-
-The Blueprint currently uses Render's free web service and free PostgreSQL plan. Render's free PostgreSQL databases expire after 30 days; upgrade the database before then to keep imported records. Free web services can spin down and do not provide persistent local disks, so production database data is stored in PostgreSQL, not SQLite. See [Render free plan limitations](https://render.com/docs/free) and [Render Blueprint reference](https://render.com/docs/blueprint-spec).
+Neon Free currently has no time limit and includes 100 CU-hours and 1 GB database storage per project. Compute scales to zero when idle; if a monthly quota is exhausted, compute pauses until reset while project data remains. Render's free web service can spin down between requests. Review [Neon Free limits](https://neon.com/pricing) and [Render free service limitations](https://render.com/docs/free) before deploying.
