@@ -1,0 +1,21 @@
+databases:
+  - name: joblens-db
+    databaseName: joblens
+    user: joblens
+    plan: free
+
+services:
+  - type: web
+    name: joblens-bd
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.address 0.0.0.0 --server.port $PORT
+    healthCheckPath: /_stcore/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: DATABASE_URL
+        fromDatabase:
+          name: joblens-db
+          property: connectionString

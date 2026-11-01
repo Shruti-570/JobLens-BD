@@ -68,3 +68,13 @@ Pydantic validates required names and HTTP(S) URLs. Transformations normalize wh
 ```powershell
 pytest
 ```
+
+## Website deployment: Render + Netlify
+
+The Streamlit application runs as a persistent Python web service on Render; Netlify serves a static, responsive front page that links to it. Netlify does not host the Streamlit server itself. The Netlify site uses `netlify.toml` and `netlify/index.html`. The Render Blueprint in `render.yaml` provisions the web service and PostgreSQL database from this repository.
+
+1. In Render, create a Blueprint from `Shruti-570/JobLens-BD` and apply `render.yaml`. The service uses Python 3.13.5, installs `requirements.txt`, and binds Streamlit to Render's injected port.
+2. In Netlify, import `Shruti-570/JobLens-BD`. Keep the repository root as the base directory and use the publish directory `netlify` (already configured in `netlify.toml`). No build command is required for the static page.
+3. The landing page points to `https://joblens-bd.onrender.com`. If Render assigns a different service URL, update the app link in `netlify/index.html` and redeploy Netlify.
+
+The Blueprint currently uses Render's free web service and free PostgreSQL plan. Render's free PostgreSQL databases expire after 30 days; upgrade the database before then to keep imported records. Free web services can spin down and do not provide persistent local disks, so production database data is stored in PostgreSQL, not SQLite. See [Render free plan limitations](https://render.com/docs/free) and [Render Blueprint reference](https://render.com/docs/blueprint-spec).
